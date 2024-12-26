@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguratio
 
 import java.util.Collections;
 
-@Configuration
+//@Configuration
 public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
     @Bean
