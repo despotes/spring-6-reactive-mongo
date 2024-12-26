@@ -17,12 +17,12 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public Flux<BeerDTO> getBeers() {
-        return null;
+        return beerRepository.findAll().map(beerMapper::toDTO);
     }
 
     @Override
     public Mono<BeerDTO> getBeerById(String id) {
-        return null;
+        return beerRepository.findById(id).map(beerMapper::toDTO);
     }
 
     @Override
@@ -30,5 +30,31 @@ public class BeerServiceImpl implements BeerService {
         return beerDTO.map(beerMapper::toEntity)
                 .flatMap(beerRepository::save)
                 .map(beerMapper::toDTO);
+    }
+
+    @Override
+    public Mono<BeerDTO> createBeer(BeerDTO beerDTO) {
+        return createBeer(Mono.just(beerDTO));
+    }
+
+    @Override
+    public Mono<BeerDTO> updateBeer(String id, BeerDTO beerDTO) {
+        return getBeerById(id)
+                .map(foundBeer -> {
+                    foundBeer.setBeerName(beerDTO.getBeerName());
+                    foundBeer.setBeerStyle(beerDTO.getBeerStyle());
+                    foundBeer.setPrice(beerDTO.getPrice());
+                    foundBeer.setUpc(beerDTO.getUpc());
+                    foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
+                    return foundBeer;
+                })
+                .map(beerMapper::toEntity)
+                .flatMap(beerRepository::save)
+                .map(beerMapper::toDTO);
+    }
+
+    @Override
+    public Mono<Void> deleteBeerById(String id) {
+        return beerRepository.deleteById(id);
     }
 }
