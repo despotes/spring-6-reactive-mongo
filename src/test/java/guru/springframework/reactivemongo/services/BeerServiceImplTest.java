@@ -11,7 +11,9 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -31,15 +33,17 @@ class BeerServiceImplTest {
     }
 
     @Test
-    void createBeer() throws InterruptedException {
+    void createBeer() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         Mono<BeerDTO> beerMono = beerService.createBeer(Mono.just(beerDTO));
 
 
         beerMono.subscribe(savedDto -> {
             System.out.println(savedDto.getId());
+            atomicBoolean.set(true);
         });
 
-        Thread.sleep(1000l);
+        await().until(atomicBoolean::get);
     }
 
     public static Beer getTestBeer() {
