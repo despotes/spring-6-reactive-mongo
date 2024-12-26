@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerDTO {
-    private Integer id;
+    private String id;
     @NotBlank
     @Size(min = 2, max = 255)
     private String customerName;
