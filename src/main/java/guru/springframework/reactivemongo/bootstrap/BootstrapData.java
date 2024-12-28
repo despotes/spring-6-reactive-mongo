@@ -1,7 +1,9 @@
 package guru.springframework.reactivemongo.bootstrap;
 
 import guru.springframework.reactivemongo.domain.Beer;
+import guru.springframework.reactivemongo.domain.Customer;
 import guru.springframework.reactivemongo.repositories.BeerRepository;
+import guru.springframework.reactivemongo.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import java.util.List;
 public class BootstrapData implements CommandLineRunner {
 
     private final BeerRepository beerRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -24,6 +27,12 @@ public class BootstrapData implements CommandLineRunner {
                 .subscribe(null,
                         throwable -> System.out.println("Error: " + throwable.getMessage()),
                         () -> System.out.println("Loaded Beer Data Successfully"));
+
+        customerRepository.deleteAll()
+                .then(loadCustomerData())
+                .subscribe(null,
+                        throwable -> System.out.println("Error: " + throwable.getMessage()),
+                        () -> System.out.println("Loaded Customer Data Successfully"));
     }
 
     private Mono<Void> loadBeerData() {
@@ -61,6 +70,27 @@ public class BootstrapData implements CommandLineRunner {
                             .build();
 
                     return beerRepository.saveAll(List.of(beer1, beer2, beer3));
+                }).then();
+
+    }
+
+    private Mono<Void> loadCustomerData() {
+        return customerRepository.count()
+                .filter(count -> count == 0)
+                .flatMapMany(count -> {
+                    Customer customer1 = Customer.builder()
+                            .customerName("Alice")
+                            .build();
+
+                    Customer customer2 = Customer.builder()
+                            .customerName("Bob")
+                            .build();
+
+                    Customer customer3 = Customer.builder()
+                            .customerName("Charlie")
+                            .build();
+
+                    return customerRepository.saveAll(List.of(customer1, customer2, customer3));
                 }).then();
 
     }
