@@ -23,6 +23,7 @@ public class BeerRouterConfig {
     public RouterFunction<ServerResponse> beerRoutes() {
         return route()
                 .GET(BEERS_PATH, accept(APPLICATION_JSON),beerHandler::listBeers)
+                .POST(BEERS_PATH, accept(APPLICATION_JSON), beerHandler::createBeer)
                 .GET(BEERS_PATH_ID, accept(APPLICATION_JSON),beerHandler::getBeerById)
                 .build();
     }
