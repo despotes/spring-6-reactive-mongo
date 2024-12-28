@@ -119,8 +119,11 @@ class BeerEndpointTest {
     @Test
     @Order(4)
     void testPatchBeer() {
-        webTestClient.patch().uri(BeerRouterConfig.BEERS_PATH_ID, 1)
-                .body(Mono.just(BeerServiceImplTest.getTestBeer()), BeerDTO.class)
+        BeerDTO beerDTO = getSavedTestBeer();
+        beerDTO.setBeerStyle("ALE");
+
+        webTestClient.patch().uri(BeerRouterConfig.BEERS_PATH_ID, beerDTO.getId())
+                .body(Mono.just(beerDTO), BeerDTO.class)
                 .exchange()
                 .expectStatus().isNoContent();
     }

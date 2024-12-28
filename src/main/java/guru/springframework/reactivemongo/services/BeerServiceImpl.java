@@ -5,6 +5,7 @@ import guru.springframework.reactivemongo.model.BeerDTO;
 import guru.springframework.reactivemongo.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -61,6 +62,31 @@ public class BeerServiceImpl implements BeerService {
                     return foundBeer;
                 })
                 .map(beerMapper::toEntity)
+                .flatMap(beerRepository::save)
+                .map(beerMapper::toDTO);
+    }
+
+    @Override
+    public Mono<BeerDTO> patchBeer(String beerId, BeerDTO beerDTO) {
+        return beerRepository.findById(beerId)
+                .map(foundBeer -> {
+                    if (StringUtils.hasText(beerDTO.getBeerName())) {
+                        foundBeer.setBeerName(beerDTO.getBeerName());
+                    }
+                    if (StringUtils.hasText(beerDTO.getBeerStyle())) {
+                        foundBeer.setBeerStyle(beerDTO.getBeerStyle());
+                    }
+                    if (beerDTO.getPrice() != null && beerDTO.getPrice().doubleValue() > 0) {
+                        foundBeer.setPrice(beerDTO.getPrice());
+                    }
+                    if (StringUtils.hasText(beerDTO.getUpc())) {
+                        foundBeer.setUpc(beerDTO.getUpc());
+                    }
+                    if (beerDTO.getQuantityOnHand() != null && beerDTO.getQuantityOnHand() > 0) {
+                        foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
+                    }
+                    return foundBeer;
+                })
                 .flatMap(beerRepository::save)
                 .map(beerMapper::toDTO);
     }

@@ -42,4 +42,10 @@ public class BeerHandler {
                 .flatMap(beerDTO -> ServerResponse.noContent().build());
 
     }
+
+    public Mono<ServerResponse> patchBeer(ServerRequest request) {
+        return request.bodyToMono(BeerDTO.class)
+                .flatMap(beerDTO -> beerService.patchBeer(request.pathVariable("beerId"), beerDTO))
+                .flatMap(beerDTO -> ServerResponse.noContent().build());
+    }
 }
