@@ -140,7 +140,8 @@ class BeerEndpointTest {
     @Test
     @Order(5)
     void testDeleteBeer() {
-        webTestClient.delete().uri(BeerRouterConfig.BEERS_PATH_ID, 1)
+        BeerDTO beerDTO = getSavedTestBeer();
+        webTestClient.delete().uri(BeerRouterConfig.BEERS_PATH_ID, beerDTO.getId())
                 .exchange()
                 .expectStatus().isNoContent();
     }
