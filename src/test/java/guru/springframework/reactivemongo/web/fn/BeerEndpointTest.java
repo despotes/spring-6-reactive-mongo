@@ -39,7 +39,7 @@ class BeerEndpointTest {
     BeerServiceImpl beerService;
 
     @Test
-    @Order(2)
+    @Order(1)
     void testListBeers() {
         webTestClient.get().uri(BeerRouterConfig.BEERS_PATH)
                 .exchange()
@@ -49,7 +49,7 @@ class BeerEndpointTest {
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     void testGetById() {
         BeerDTO beerDTO = getSavedTestBeer();
 
