@@ -20,4 +20,10 @@ public class BeerHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(beerService.getBeers(), BeerDTO.class);
     }
+
+    public Mono<ServerResponse> getBeerById(ServerRequest request) {
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(beerService.getBeerById(request.pathVariable("beerId")), BeerDTO.class);
+    }
 }
